@@ -2,13 +2,14 @@ files = [
 	src.src log.log 
 	ypp.ypp lpp.lpp hpp.hpp cpp.cpp Makefile 
 	.gitignore
+	README.md LOGO+'.png'
 ]
 
 mk_project = touch@files
 
 .gitignore = [
-	*~
-	*swp
+	'*~'
+	'*swp'
 	exe.exe
 	log.log
 	ypp.tab.?pp
@@ -19,7 +20,7 @@ Makefile =
 [
 'log.log: src.src ./exe.exe
 	./exe.exe < $< > $@ && tail $(TAIL) $@'
-'C = cpp.cpp ypp.tab.cpp lex.yy.c'
+''+['C''=''cpp.cpp''ypp.tab.cpp''lex.yy.c']/sp
 'H = hpp.hpp ypp.tab.hpp meta.hpp'
 'CXXFLAGS += -std=gnu++11' 
 './exe.exe: $(C) $(H)
@@ -30,3 +31,21 @@ Makefile =
 	flex $<'	
 ]
 
+README.md = [
+	'# ![logo]('+LOGO+'.png) '+MODULE
+	'### '+ABOUT
+	'\n(c) '+AUTHOR+' , '+LICENSE
+	'\ngithub: '+GITHUB
+]
+
+meta.hpp = [
+	'#ifndef _H_META'
+	'#define _H_META'
+	'#define MODULE\t"'+MODULE+'"'
+	'#define ABOUT\t"'+ABOUT+'"'
+	'#define AUTHOR\t"'+AUTHOR+'"'
+	'#define LICENSE\t"'+LICENSE+'"'
+	'#define GITHUB\t("'+GITHUB+'")'
+	'#define LOGO\t"'+LOGO+'"'
+	'#endif // _H_META'
+]

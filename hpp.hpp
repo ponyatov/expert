@@ -14,13 +14,21 @@ struct Sym {
 	Sym(string);
 	vector<Sym*> nest; void push(Sym*);
 	virtual string head(); string pad(int); string dump(int=0);
+	virtual Sym* eval();
+	virtual Sym* add(Sym*);
+	virtual Sym* div(Sym*);
+	virtual string str();
 };
+extern map<string,Sym*> glob;
+extern void glob_init();
 
-struct Str: Sym { Str(string); string head(); };
+struct Error: Sym { Error(string); };
 
-struct Vector: Sym { Vector(); string head(); };
+struct Str: Sym { Str(string); string head(); Sym*add(Sym*); };
 
-struct Op: Sym { Op(string); string head(); };
+struct Vector: Sym { Vector(); string head(); Sym*div(Sym*); string str(); };
+
+struct Op: Sym { Op(string); string head(); Sym*eval(); };
 
 extern int yylex();
 extern int yylineno;
