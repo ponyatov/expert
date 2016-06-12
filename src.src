@@ -1,3 +1,10 @@
+
+next = dir@MODULE
+
+pp = { X+'.'+X }
+
+.end
+
 files = [
 	src.src log.log 
 	ypp.ypp lpp.lpp hpp.hpp cpp.cpp Makefile 
@@ -16,15 +23,15 @@ mk_project = touch@files
 	lex.yy.c
 ]
 
-Makefile = 
+file@Makefile = 
 [
-'log.log: src.src ./exe.exe
-	./exe.exe < $< > $@ && tail $(TAIL) $@'
-''+['C''=''cpp.cpp''ypp.tab.cpp''lex.yy.c']/sp
-'H = hpp.hpp ypp.tab.hpp meta.hpp'
-'CXXFLAGS += -std=gnu++11' 
-'./exe.exe: $(C) $(H)
-	$(CXX) $(CXXFLAGS) -o $@ $(C) $(L)'
+	''+['log.log'':'src.src'./exe.exe'
+		'\n\t./exe.exe' '<' '$<' '>' '$@' '&&' 'tail' '$(TAIL)' '$@']/sp
+	''+[C '=' cpp.cpp ypp.tab.cpp lex.yy.c]/sp
+	''+[H '=' hpp.hpp ypp.tab.hpp meta.hpp]/sp
+	''+[CXXFLAGS '+=' '-std=gnu++11']/sp 
+	''+['./exe.exe' ':' '$(C)' '$(H)'
+		'\n\t$(CXX)' '$(CXXFLAGS)' '-o' '$@' '$(C)' '$(L)']/sp
 'ypp.tab.cpp: ypp.ypp
 	bison $<'
 'lex.yy.c: lpp.lpp

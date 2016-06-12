@@ -19,9 +19,15 @@ Sym* Sym::eval() {
 		(*it) = (*it)->eval();
 	return this; }
 
+Sym* Sym::eq(Sym*o) { glob[val]=new Var(val,o); return glob[val]; }
+Sym* Sym::at(Sym*o) { return new Error(head()+"@"+o->head()); }
+
 Sym* Sym::add(Sym*o) { return new Error(head()+"+"+o->head()); }
 Sym* Sym::div(Sym*o) { return new Error(head()+"/"+o->head()); }
 string Sym::str() { return val; }
+
+Var::Var(string V, Sym*o):Sym(V) { push(o); }
+string Var::head() { return "["+val+"]"; }
 
 Error::Error(string V):Sym(V) { yyerror(V); }
 
@@ -52,19 +58,33 @@ Op::Op(string V):Sym(V) {}
 string Op::head() { return "("+val+")"; }
 Sym* Op::eval() {
 	if (val=="~") return nest[0]; else Sym::eval();
+	if (val=="=") return nest[0]->eq(nest[1]);
+	if (val=="@") return nest[0]->at(nest[1]);
 	if (val=="+") return nest[0]->add(nest[1]);
 	if (val=="/") return nest[0]->div(nest[1]);
 	return this; }
 
+Fn::Fn(string V,FN F):Sym(V) { fn=F; }
+Sym* Fn::at(Sym*o) { return fn(o); }
+
+Dir::Dir(string V):Sym(V){}
+string Dir::head() { return val+"/"; }
+Sym* Dir::dir(Sym*o) { return new Dir(o->str()); }
+
+File::File(string V):Sym(V){}
+Sym* File::file(Sym*o) { return new File(o->str()); }
+
 map<string,Sym*> glob;
 void glob_init() {
-	glob["MODULE"]	= new Str(MODULE);		// meta info
+	glob["MODULE"]	= new Str(MODULE);			// meta info
 	glob["ABOUT"]	= new Str(ABOUT);
 	glob["AUTHOR"]	= new Str(AUTHOR);
 	glob["LICENSE"]	= new Str(LICENSE);
 	glob["GITHUB"]	= new Str(GITHUB);
 	glob["LOGO"]	= new Str(LOGO);
-	glob["sp"]		= new Str(" ");			// string constants
+	glob["sp"]		= new Str(" ");				// string constants
 	glob["nl"]		= new Str("\n");
 	glob["tab"]		= new Str("\t");
+	glob["dir"]		= new Fn("dir",Dir::dir);	// functions
+	glob["file"]	= new Fn("file",File::file);
 }
