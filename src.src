@@ -1,7 +1,32 @@
-touch src.src log.log ypp.ypp lpp.lpp hpp.hpp cpp.cpp Makefile
-*~
-*swp
-exe.exe
-log.log
-ypp.tab.?pp
-lex.yy.c
+files = [
+	src.src log.log 
+	ypp.ypp lpp.lpp hpp.hpp cpp.cpp Makefile 
+	.gitignore
+]
+
+mk_project = touch@files
+
+.gitignore = [
+	*~
+	*swp
+	exe.exe
+	log.log
+	ypp.tab.?pp
+	lex.yy.c
+]
+
+Makefile = 
+[
+'log.log: src.src ./exe.exe
+	./exe.exe < $< > $@ && tail $(TAIL) $@'
+'C = cpp.cpp ypp.tab.cpp lex.yy.c'
+'H = hpp.hpp ypp.tab.hpp meta.hpp'
+'CXXFLAGS += -std=gnu++11' 
+'./exe.exe: $(C) $(H)
+	$(CXX) $(CXXFLAGS) -o $@ $(C) $(L)'
+'ypp.tab.cpp: ypp.ypp
+	bison $<'
+'lex.yy.c: lpp.lpp
+	flex $<'	
+]
+
